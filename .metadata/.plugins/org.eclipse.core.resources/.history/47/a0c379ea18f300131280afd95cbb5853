@@ -91,7 +91,7 @@ public class HomeActivity extends Activity{
 //			for(int i=0;i<teams2.length;i++){
 //				System.out.println(">>>>> b="+teams2[i]);
 //			}
-//			System.out.println(">>>>> debug home gameinfo size="+gameInfoList.size()+" bothsides="+gameInfoList.get(0).getBothSides()+" "+gameInfoList.get(1).getBothSides());
+			System.out.println(">>>>> debug home gameinfo size="+gameInfoList.size()+" bothsides="+gameInfoList.get(0).getBothSides()+" "+gameInfoList.get(1).getBothSides());
 			
 			Message msg = new Message();
 			msg.what = handlerId;

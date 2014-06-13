@@ -83,15 +83,15 @@ public class HomeActivity extends Activity{
 			String dbPath = appPath+"worldcup.db";
 			SQLiteUtils sqliteUtils = new SQLiteUtils(hContext,dbPath);
 			ArrayList<GameInfo> gameInfoList = sqliteUtils.getGameInfoListBySql("");
-//			String[] teams1 = getTeams(gameInfoList.get(0).getBothSides());
-//			for(int i=0;i<teams1.length;i++){
-//				System.out.println(">>>>> a="+teams1[i]);
-//			}
-//			String[] teams2 = getTeams(gameInfoList.get(1).getBothSides());
-//			for(int i=0;i<teams2.length;i++){
-//				System.out.println(">>>>> b="+teams2[i]);
-//			}
-//			System.out.println(">>>>> debug home gameinfo size="+gameInfoList.size()+" bothsides="+gameInfoList.get(0).getBothSides()+" "+gameInfoList.get(1).getBothSides());
+			String[] teams1 = getTeams(gameInfoList.get(0).getBothSides());
+			for(int i=0;i<teams1.length;i++){
+				System.out.println(">>>>> a="+teams1[i]);
+			}
+			String[] teams2 = getTeams(gameInfoList.get(1).getBothSides());
+			for(int i=0;i<teams2.length;i++){
+				System.out.println(">>>>> b="+teams2[i]);
+			}
+			System.out.println(">>>>> debug home gameinfo size="+gameInfoList.size()+" bothsides="+gameInfoList.get(0).getBothSides()+" "+gameInfoList.get(1).getBothSides());
 			
 			Message msg = new Message();
 			msg.what = handlerId;
