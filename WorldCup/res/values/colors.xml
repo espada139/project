@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="input_txt">#00BAFF</color>
+    <color name="yellow_txt">#FFC300</color>
+    <color name="calm_green">#2CC990</color>
+    <color name="green">#2EB39A</color>
+    <color name="green0">#00FFC5</color>
+    <color name="green1">#19FFCB</color>
+    <color name="green2">#00B38A</color>
+    <color name="tm">#00000000</color>
+    <color name="grey0">#ECF0F1</color>
+    <color name="grey1">#7F8C8D</color>
+    <color name="grey2">#BDC3C7</color>
+    <color name="yellow0">#EFDFBD</color>
+    <color name="yellow1">#F2DAC4</color>
+    <color name="yellow2">#D9BDAD</color>
+    <color name="yellow3">#A68A7B</color>
+    <color name="red0">#FF4000</color>
+    <color name="red1">#B32D00</color>
+</resources>

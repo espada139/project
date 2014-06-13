@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/grey_border"
+    >
+    
+    <RelativeLayout 
+        android:id="@+id/schedul_card_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <TextView 
+            android:id="@+id/schedule_card_game_time"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="6月13号 04:00"
+            android:textColor="@color/black"
+            android:textSize="30dp"
+            android:gravity="center"
+            />
+        
+        <TextView 
+            android:id="@+id/schedule_card_game_session"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text="1场"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:background="@drawable/circle_background_focus"
+            />
+        
+    </RelativeLayout>
+   
+    <RelativeLayout 
+        android:id="@+id/schedule_card_content"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/schedul_card_header"
+        >
+        
+        <ImageView
+            android:id="@+id/schedule_card_team_flag0"
+            android:layout_width="113dp"
+            android:layout_height="64dp"
+            android:layout_toLeftOf="@+id/schedule_card_team_vs"
+            android:background="@drawable/baxi"
+            />
+        <TextView 
+            android:id="@+id/schedule_card_team_name0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/schedule_card_team_flag0"
+            android:layout_toLeftOf="@+id/schedule_card_team_vs"
+            android:text="巴西"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:gravity="center"
+            />
+        <TextView 
+            android:id="@+id/schedule_card_team_vs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="VS"
+            android:textColor="@color/black"
+            android:textSize="50dp"
+            android:gravity="center"
+            />
+        <ImageView
+            android:id="@+id/schedule_card_team_flag1"
+            android:layout_width="113dp"
+            android:layout_height="64dp"
+            android:layout_toRightOf="@+id/schedule_card_team_vs"
+            android:background="@drawable/faguo"
+            />
+        <TextView 
+            android:id="@+id/schedule_card_team_name1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/schedule_card_team_flag1"
+            android:layout_toRightOf="@+id/schedule_card_team_vs"
+            android:text="法国"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:gravity="center"
+            />
+        
+    </RelativeLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/schedule_card_footer"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="20dp"
+        android:layout_below="@+id/schedule_card_content"
+        >
+        <TextView 
+            android:id="@+id/schedule_card_share"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/schedule_card_footer_center"
+            android:text="分享"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:background="@color/calm_green"
+            />
+        <TextView 
+            android:id="@+id/schedule_card_footer_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_centerInParent="true"
+            />
+        <TextView 
+            android:id="@+id/schedule_card_store"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/schedule_card_footer_center"
+            android:text="收藏"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:background="@color/calm_green"
+            />
+    </RelativeLayout>
+    
+    
+
+</RelativeLayout>
