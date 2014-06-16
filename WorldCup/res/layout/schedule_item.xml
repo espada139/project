@@ -47,7 +47,7 @@
             android:layout_width="113dp"
             android:layout_height="64dp"
             android:layout_toLeftOf="@+id/schedule_card_team_vs"
-            android:background="@drawable/baxi"
+            android:src="@drawable/baxi"
             />
         <TextView 
             android:id="@+id/schedule_card_team_name0"
@@ -75,7 +75,7 @@
             android:layout_width="113dp"
             android:layout_height="64dp"
             android:layout_toRightOf="@+id/schedule_card_team_vs"
-            android:background="@drawable/faguo"
+            android:src="@drawable/faguo"
             />
         <TextView 
             android:id="@+id/schedule_card_team_name1"

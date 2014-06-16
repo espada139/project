@@ -4,9 +4,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.espada.entity.GameInfo;
 import com.espada.entity.TeamInfo;
@@ -26,7 +31,6 @@ public class SQLiteUtils {
 		this.context = context;
 		this.sdb = openDatabase(db_path);
 		createGameInfoTable();
-		initTeam();
 	}
 	
 	public SQLiteDatabase openDatabase(String db_path){
@@ -49,14 +53,18 @@ public class SQLiteUtils {
 	
 	public void createGameInfoTable(){
 		SQLiteDatabase db = this.sdb;
-		String crtSql = "create table if not exists wc_gameinfo(id integer primary key,session integer,date text,both_sides text,location text,winner text,score text,stored integer,over integer,game_kind integer,other text,team0,team1,country0,country1)";
+		String crtSql = "create table if not exists wc_gameinfo(id integer primary key,session integer,date text,both_sides text,location text,winner text,score text,stored integer,over integer,game_kind integer,other text,team0 text,team1 text,country0 text,country1 text)";
 		String createTeamTableSql = "create table if not exists wc_team(id integer primary key,team_name text,country text,flag text,game_group text,level integer)";
 		String createVersionTableSql = "create table if not exists wc_version(id integer primary key,version_code integer,date text)";
+		String createGameMoreSql = "create table if not exists wc_gamemore(id integer primary key,session integer,day text,week_day text,time text)";
 		
 		try{
 			db.execSQL(crtSql);
 			db.execSQL(createTeamTableSql);
 			db.execSQL(createVersionTableSql);
+//			db.execSQL("drop table wc_gamemore");
+//			db.execSQL("delete from wc_gamemore where id>64");
+			db.execSQL(createGameMoreSql);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -75,6 +83,20 @@ public class SQLiteUtils {
 		
 	}
 	
+	public void insertGameMore(int session,String day,String week_day,String time){
+		SQLiteDatabase db = this.sdb;
+		String insertGameMoreSql = "insert into wc_gamemore(session,day,week_day,time) values("+session+",'"+day+"','"+week_day+"','"+time+"')";
+		
+		try{
+			db.execSQL(insertGameMoreSql);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
 	public void insertTeam(String team_name,String country,String flag,String game_group,int level){
 		SQLiteDatabase db = this.sdb;
 		String insert_sql = "insert into wc_team(team_name,country,flag,game_group,level) values('"+team_name+"','"+country+"','"+flag+"','"+game_group+"',"+level+")";
@@ -86,10 +108,124 @@ public class SQLiteUtils {
 		}
 	}
 	
+	
+	public void initGameMore(){
+		ArrayList<GameInfo> gameInfoList = getGameInfoListBySql("");
+		
+		for(int i=0;i<gameInfoList.size();i++){
+			GameInfo gameInfo = gameInfoList.get(i);
+			
+			int session = gameInfo.getSession();
+			String date = gameInfo.getDate();
+			
+			String tempdate[] = date.split(" ");
+			String day = "";
+			String weekday = "";
+			String time = "";
+			for(int j=0;j<tempdate.length;j++){
+				switch(j){
+				case 0:
+					day = tempdate[j];
+					break;
+				case 1:
+					weekday = tempdate[j];
+					break;
+				case 2:
+					time = tempdate[j];
+					break;
+				}
+			}
+			
+			System.out.println(">>>>> debug wc sqliteutils date"+i+"="+date+" day="+day+" weekday="+weekday+" time="+time);
+			
+			insertGameMore(session,day,weekday,time);
+			
+		}
+		
+	}
+	
+	public void getGameMoreByDate(){
+		SQLiteDatabase db = this.sdb;		
+		
+		Date date = new Date();
+		SimpleDateFormat formate = new SimpleDateFormat("yyyy-MM-dd");
+		
+		
+		String dateStr = formate.format(date);
+		
+		String dateStrs[] = dateStr.split("-");
+		
+		String currentDay = "";
+		
+		if(dateStrs.length==3){
+			currentDay = dateStrs[1]+"月"+dateStrs[2]+"日";
+		}
+		
+		String querySql = "select * from wc_gamemore where day='"+currentDay+"'";
+		Cursor cursor = db.rawQuery(querySql, null);
+		
+		System.out.println(">>>>> debug wc sqliteutils csize="+cursor.getCount()+" dateStr="+dateStr+" currentday="+currentDay);
+		
+		while(cursor.moveToNext()){
+			int session = cursor.getInt(cursor.getColumnIndex("session"));
+			String day = cursor.getString(cursor.getColumnIndex("day"));
+			
+			System.out.println(">>>>> debug wc sqliteutils session="+session+" day="+day);
+			
+		}
+		
+	}
+	
+	/*
+	 * day_kind 0:代表今天
+	 */
+	public ArrayList<Integer> getSessionOfGameMoreByDay(int day_kind){
+		SQLiteDatabase db = this.sdb;		
+		
+		Date date = new Date();
+		SimpleDateFormat formate = new SimpleDateFormat("yyyy-MM-dd");
+		
+		String dateStr = formate.format(date);
+		String dateStrs[] = dateStr.split("-");
+		String currentDay = "";
+		
+		if(dateStrs.length==3){
+			if(day_kind==0){
+				currentDay = dateStrs[1]+"月"+dateStrs[2]+"日";
+			}else if(day_kind==1){
+				if(dateStrs[2].equals("30")){
+					currentDay = "07月01日";
+				}
+				if(Integer.valueOf(dateStrs[2])<10){
+					currentDay = dateStrs[1]+"月"+0+(Integer.valueOf(dateStrs[2])+1)+"日";
+				}
+				currentDay = dateStrs[1]+"月"+(Integer.valueOf(dateStrs[2])+1)+"日";
+				System.out.print(">>>>> debug wc currentDay="+currentDay+" "+Integer.valueOf("08"));
+			}
+			
+		}
+		
+		String querySql = "select * from wc_gamemore where day='"+currentDay+"'";
+		Cursor cursor = db.rawQuery(querySql, null);
+		ArrayList<Integer> sessionList = new ArrayList<Integer>();
+		
+		System.out.println(">>>>> debug wc sqliteutils csize="+cursor.getCount()+" dateStr="+dateStr+" currentday="+currentDay);
+		
+		while(cursor.moveToNext()){
+			int session = cursor.getInt(cursor.getColumnIndex("session"));
+			String day = cursor.getString(cursor.getColumnIndex("day"));
+			
+			System.out.println(">>>>> debug wc sqliteutils session="+session+" day="+day);
+			sessionList.add(session);
+		}
+		
+		return sessionList;
+	}
+	
 	public void initTeam(){
 				
 		String[] teamNames = {"巴西","喀麦隆","克罗地亚","墨西哥","智利","澳大利亚","西班牙","荷兰","希腊","哥伦比亚","科特迪瓦","日本","哥斯达黎加","乌拉圭","意大利","英格兰","厄瓜多尔","法国","瑞士","洪都拉斯","阿根廷","波黑","尼日利亚","伊朗","美国","加纳","德国","葡萄牙","阿尔及利亚","比利时","韩国","俄罗斯"};
-		String[] countryNames = {"baxi","kemailong","keluodiy","moxige","zhili","aodaliya","xibanya","helan","xila","gelunbiya","ketediwa","riben","gesidalijia","wulagui","yidali","yinggelan","eguduoer","faguo","ruishi","hongdulasi","agenting","bohei","niriliya","yilang","meiguo","jiana","deguo","putaoya","aerjiliya","bilishi","hanguo","eluosi"};
+		String[] countryNames = {"baxi","kemailong","keluodiya","moxige","zhili","aodaliya","xibanya","helan","xila","gelunbiya","ketediwa","riben","gesidalijia","wulagui","yidali","yinggelan","eguduoer","faguo","ruishi","hongdulasi","agenting","bohei","niriliya","yilang","meiguo","jiana","deguo","putaoya","aerjiliya","bilishi","hanguo","eluosi"};
 		
 		for(int i=0;i<teamNames.length;i++){
 			String flagPath = appPath+"Image/flagImage/"+countryNames[i]+".png";
@@ -118,6 +254,39 @@ public class SQLiteUtils {
 		}
 		
 		return teamInfo;
+	}
+	
+	public void updateGameInfo(){
+		SQLiteDatabase db = this.sdb;
+		
+		ArrayList<GameInfo> gameInfoList = getGameInfoListBySql("");
+		
+		for(int i=0;i<gameInfoList.size();i++){
+			GameInfo gameInfo = gameInfoList.get(i);
+			
+			String team0 = gameInfo.getTeam0();
+			String team1 = gameInfo.getTeam1();
+			
+			String country0 = "";
+			if(getTeamInfo(team0)!=null){
+				country0 = getTeamInfo(team0).getCountry();
+			}
+			
+			String country1 = "";
+			if(getTeamInfo(team1)!=null){
+				country1 = getTeamInfo(team1).getCountry();
+			}
+			
+			System.out.println(">>>>> debug sqliteutils updategf team0="+team0+" country0="+country0+" team1="+team1+" country1="+country1);
+			
+			int gid = gameInfo.getSession();
+			
+			String updateSql = "update wc_gameinfo set country0='"+country0+"',country1='"+country1+"' where session="+gid;
+			
+			db.execSQL(updateSql);
+			
+		}
+		
 	}
 	
 	
@@ -159,6 +328,86 @@ public class SQLiteUtils {
 		
 		return gameInfoList;
 		
+	}
+	
+	public GameInfo getGameInfoBySession(int session_p){
+		SQLiteDatabase db = this.sdb;
+		GameInfo gameInfo = null;
+		
+		String querySql = "select * from wc_gameinfo where session="+session_p;
+		
+		Cursor cursor = db.rawQuery(querySql, null);
+		
+		while(cursor.moveToNext()){
+			
+			int session = cursor.getInt(cursor.getColumnIndex("session"));
+			String date = cursor.getString(cursor.getColumnIndex("date"));
+			String bothSides = cursor.getString(cursor.getColumnIndex("both_sides"));
+			String location = cursor.getString(cursor.getColumnIndex("location"));
+			String winner = cursor.getString(cursor.getColumnIndex("winner"));
+			String score = cursor.getString(cursor.getColumnIndex("score"));
+			int stored = cursor.getInt(cursor.getColumnIndex("stored"));
+			int over = cursor.getInt(cursor.getColumnIndex("over"));
+			int gameKind = cursor.getInt(cursor.getColumnIndex("game_kind"));
+			String other = cursor.getString(cursor.getColumnIndex("other"));
+			String team0 = cursor.getString(cursor.getColumnIndex("team0"));
+			String team1 = cursor.getString(cursor.getColumnIndex("team1"));
+			String country0 = cursor.getString(cursor.getColumnIndex("country0"));
+			String country1 = cursor.getString(cursor.getColumnIndex("country1"));
+			
+			gameInfo = new GameInfo(session,date,bothSides,location,winner,score,stored,over,gameKind,other,team0,team1,country0,country1);
+						
+		}
+		
+		return gameInfo;
+	}
+		
+	public ArrayList<GameInfo> getGameInfoOfDay(int day_kind){
+		SQLiteDatabase db = this.sdb;
+		ArrayList<GameInfo> gameInfoList = new ArrayList<GameInfo>();
+		
+		ArrayList<Integer> todaySessionList = getSessionOfGameMoreByDay(day_kind);
+		
+		if(todaySessionList.size()>0){
+			for(int i=0;i<todaySessionList.size();i++){
+				GameInfo gameInfo = getGameInfoBySession(todaySessionList.get(i));
+				if(gameInfo!=null){
+					gameInfoList.add(gameInfo);
+				}
+			}
+			
+		}
+		
+		return gameInfoList;
+		
+		
+	}
+	
+	
+    public String getNumbers(String content){
+		
+		Pattern pattern = Pattern.compile("\\d+");
+		Matcher matcher = pattern.matcher(content);
+		while(matcher.find()){
+			return matcher.group(0);
+		}
+		
+		return "";
+	}
+	
+	public String[] getTeams(String both_sides){
+		String[] result = null;
+		String teams[] = new String[3];
+		
+		result = both_sides.split(" ");
+		
+		if(result.length==3){
+			teams[0] = result[0];
+			teams[1] = result[2];
+			teams[2] = result[1];
+		}
+		
+		return teams;
 	}
 	
 //	public ArrayList<QuestionRemark> getQuestionRemarkBySql(String query_sql,int offset,int limit_nums){

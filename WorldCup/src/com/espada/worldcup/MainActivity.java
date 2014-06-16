@@ -1,15 +1,20 @@
 package com.espada.worldcup;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.espada.common.HttpUtils;
+import com.espada.common.SQLiteUtils;
+import com.espada.common.Utils;
 
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -35,6 +40,10 @@ public class MainActivity extends TabActivity {
 	private static final String SETTING = "设置";
 	private int homeImgId = R.drawable.home,storeImgId = R.drawable.store,settingImgId = R.drawable.setting;
 	
+	private String appPath = Environment.getExternalStorageDirectory()+"/worldcup/";
+	
+	Utils utils = null;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,13 +51,22 @@ public class MainActivity extends TabActivity {
         setContentView(R.layout.main);
         
         mContext = this;
+        utils = new Utils();
+        
         tabHost = this.getTabHost();
         tabHost.setFocusable(true);
         
         
         mainHandler.sendEmptyMessage(11);
-        mainHandler.sendEmptyMessage(41);
+//        mainHandler.sendEmptyMessage(41);
         
+    }
+    
+    @Override
+    public void onResume(){
+    	super.onResume();
+    	Runnable  initRunnable = new InitRunnable();
+    	pool.execute(initRunnable);
     }
     
     Handler mainHandler = new Handler(){
@@ -95,6 +113,28 @@ public class MainActivity extends TabActivity {
     	return tabSpec;
     }
     
+    public class InitRunnable implements Runnable{
+    	
+    	public InitRunnable(){
+    		
+    	}
+    	
+    	@Override
+    	public void run(){
+    		String outputPath = appPath+"Image/flagImage/";
+    		
+    		if(!new File(outputPath).exists()){
+    			try {
+    				utils.copyAssetsFile(mContext, "flags", outputPath);
+    			} catch (IOException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+    		}
+    		
+    	}
+    	
+    }
     
     public class GetDateRunnable implements Runnable{
     	public GetDateRunnable(){
@@ -105,8 +145,12 @@ public class MainActivity extends TabActivity {
     	public void run(){
     		HttpUtils httpUtils = new HttpUtils(mContext);
     		
-//    		String url0 = "http://worldcup.2014.163.com/schedule/calendar/";
-//    		httpUtils.getGroupGameList(url0);
+    		String url0 = "http://worldcup.2014.163.com/schedule/calendar/?bdsc";
+    		httpUtils.getGroupGameList(url0);
+    		
+//    		String dbPath = appPath+"worldcup.db";
+//			SQLiteUtils sqliteUtils = new SQLiteUtils(mContext,dbPath);
+//			sqliteUtils.initTeam();
     		
     	}
     	

@@ -38,7 +38,7 @@ public class HttpUtils {
 			return;
 		
 		Elements content = doc.getElementsByClass("wctable");
-//		System.out.println(">>>>> wct debug httputils content="+content.toString());
+		System.out.println(">>>>> wct debug httputils content="+content.toString());
 		
 		int count0 = content.size();
 		for(int i=0;i<count0;i++){
@@ -83,8 +83,15 @@ public class HttpUtils {
 									team1 = teams[1];
 								}
 								
-								String country0 = sqliteUtils.getTeamInfo(team0).getCountry();
-								String country1 = sqliteUtils.getTeamInfo(team1).getCountry();
+								String country0 = "";
+								if(sqliteUtils.getTeamInfo(team0)!=null){
+									country0 = sqliteUtils.getTeamInfo(team0).getCountry();
+								}
+								
+								String country1 = "";
+								if(sqliteUtils.getTeamInfo(team1)!=null){
+									country1 = sqliteUtils.getTeamInfo(team1).getCountry();
+								}
 								
 								sqliteUtils.insertGameInfo(session, date, bothSides, location, "", "", 0, 0, i, other,team0,team1,country0,country1);
 								

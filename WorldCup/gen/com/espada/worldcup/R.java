@@ -41,19 +41,20 @@ public final class R {
         public static final int circle_background_focus0=0x7f020005;
         public static final int faguo=0x7f020006;
         public static final int grey_border=0x7f020007;
-        public static final int home=0x7f020008;
-        public static final int ic_launcher=0x7f020009;
-        public static final int mini_back=0x7f02000a;
-        public static final int mini_back_focus=0x7f02000b;
-        public static final int mini_forward=0x7f02000c;
-        public static final int navigation_center=0x7f02000d;
-        public static final int navigation_center_focus=0x7f02000e;
-        public static final int navigation_left=0x7f02000f;
-        public static final int navigation_left_focus=0x7f020010;
-        public static final int navigation_right=0x7f020011;
-        public static final int navigation_right_focus=0x7f020012;
-        public static final int setting=0x7f020013;
-        public static final int store=0x7f020014;
+        public static final int helan1=0x7f020008;
+        public static final int home=0x7f020009;
+        public static final int ic_launcher=0x7f02000a;
+        public static final int mini_back=0x7f02000b;
+        public static final int mini_back_focus=0x7f02000c;
+        public static final int mini_forward=0x7f02000d;
+        public static final int navigation_center=0x7f02000e;
+        public static final int navigation_center_focus=0x7f02000f;
+        public static final int navigation_left=0x7f020010;
+        public static final int navigation_left_focus=0x7f020011;
+        public static final int navigation_right=0x7f020012;
+        public static final int navigation_right_focus=0x7f020013;
+        public static final int setting=0x7f020014;
+        public static final int store=0x7f020015;
     }
     public static final class id {
         public static final int home_header_back_txt=0x7f060002;

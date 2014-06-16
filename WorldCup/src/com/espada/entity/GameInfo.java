@@ -16,7 +16,7 @@ public class GameInfo {
 	private String country0;
 	private String country1;
 	
-	public GameInfo(int session,String date,String both_sides,String location,String winner,String score,int stored,int over,int game_kind,String other,String team0,String team1,String country0,String country1){
+	public GameInfo(int session,String date,String both_sides,String location,String winner,String score,int stored,int over,int game_kind,String other,String team_0,String team_1,String country_0,String country_1){
 		setSession(session);
 		setDate(date);
 		setBothSides(both_sides);
@@ -27,6 +27,10 @@ public class GameInfo {
 		setOver(over);
 		setGameKind(game_kind);
 		setOther(other);
+		setTeam0(team_0);
+		setTeam1(team_1);
+		setCountry0(country_0);
+		setCountry1(country_1);
 	}
 	
 	public void setSession(int session){
