@@ -148,6 +148,28 @@ public class HomeActivity extends Activity{
 		
 	}
 	
+	public class StoredGameRunnable implements Runnable{
+		private int handlerId;
+		private int session;
+		
+		public StoredGameRunnable(int handler_id,int session){
+			this.handlerId = handler_id;
+			this.session = session;
+		}
+		
+		@Override
+		public void run(){
+			
+			String dbPath = appPath+"worldcup.db";
+			SQLiteUtils sqliteUtils = new SQLiteUtils(hContext,dbPath);
+			
+			sqliteUtils.updateStoredOfGameInfo(session);
+			sqliteUtils.getGameInfoOfStored();
+			
+		}
+		
+	}
+	
 	public class HomeNavigationOnTouchListener implements OnTouchListener{
 		private int navId;
 		
@@ -191,6 +213,35 @@ public class HomeActivity extends Activity{
 				homeNavigationTxv2.setBackgroundResource(R.drawable.navigation_right);
 			}
 			
+			
+			return true;
+		}
+		
+	}
+	
+	public class ScheduleCardStoredOnTouchListener implements OnTouchListener{
+		private int handlerId;
+		private int session;
+		
+		public ScheduleCardStoredOnTouchListener(int handler_id,int session){
+			this.handlerId = handler_id;
+			this.session = session;
+		}
+		
+		@Override
+		public boolean onTouch(View view,MotionEvent event){
+			
+			if(event.getAction()==MotionEvent.ACTION_UP){
+				view.setBackgroundColor(hContext.getResources().getColor(R.color.calm_green));
+				
+				Runnable storedGameRunnable = new StoredGameRunnable(handlerId,session);
+				threadsPool.execute(storedGameRunnable);
+				
+			}
+			
+			if(event.getAction()==MotionEvent.ACTION_DOWN){
+				view.setBackgroundColor(hContext.getResources().getColor(R.color.green));
+			}
 			
 			return true;
 		}
@@ -252,6 +303,7 @@ public class HomeActivity extends Activity{
 			
 			String session = gameInfo.getSession()+"场";
 			gameInfoViewHolder.scheduleCardGameSessionTxv.setText(session);
+			gameInfoViewHolder.scheduleCardGameSessionTxv.setTag(session);
 			
 			String date = gameInfo.getDate();
 			gameInfoViewHolder.scheduleCardGameTimeTxv.setText(date);
@@ -278,7 +330,7 @@ public class HomeActivity extends Activity{
 			gameInfoViewHolder.scheduleCardTeamNameTxv0.setText(team0);
 			gameInfoViewHolder.scheduleCardTeamNameTxv1.setText(team1);
 			
-			
+			gameInfoViewHolder.scheduleCardStoreTxv.setOnTouchListener(new ScheduleCardStoredOnTouchListener(29,gameInfo.getSession()));
 			
 			return convertView;
 		}

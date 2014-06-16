@@ -289,6 +289,28 @@ public class SQLiteUtils {
 		
 	}
 	
+	public void updateStoredOfGameInfo(int session){
+		SQLiteDatabase db = this.sdb;
+		
+		try{
+            String updateSql = "update wc_gameinfo set stored=1 where session="+session;
+			db.execSQL(updateSql);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void getGameInfoOfStored(){
+		
+		String querySql = "select * from wc_gameinfo where stored=1";
+		
+		ArrayList<GameInfo> gameInfoList = getGameInfoListBySql(querySql);
+		
+		System.out.println(">>>>> debug sqlitutils stored game size="+gameInfoList.size());
+		
+	}
+	
 	
 	public ArrayList<GameInfo> getGameInfoListBySql(String query_sql){
 		
